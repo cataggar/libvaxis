@@ -139,7 +139,7 @@ pub fn resetState(self: *Vaxis, tty: *std.Io.Writer) !void {
     if (self.screen.cursor_shape != .default) {
         // In many terminals, `.default` will set to the configured cursor shape. Others, it will
         // change to a blinking block.
-        tty.print(ctlseqs.cursor_shape, .{@intFromEnum(Cell.CursorShape.default)}) catch {};
+        tty.print(ctlseqs.cursor_shape, .{@backingInt(Cell.CursorShape.default)}) catch {};
     }
     if (self.state.kitty_keyboard) {
         try tty.writeAll(ctlseqs.csi_u_pop);
@@ -258,9 +258,9 @@ pub fn queryTerminal(self: *Vaxis, tty: *std.Io.Writer, timeout: std.Io.Duration
     try self.queryTerminalSend(tty);
     try std.Io.futexWaitTimeout(
         self.io,
-        atomic.Value(u32),
-        &self.query_futex,
-        .init(0),
+        u32,
+        &self.query_futex.raw,
+        0,
         .{
             .duration = .{
                 .clock = .real,
@@ -761,7 +761,7 @@ pub fn render(self: *Vaxis, tty: *std.Io.Writer) !void {
                             w,
                             scale.numerator,
                             scale.denominator,
-                            @intFromEnum(scale.vertical_alignment),
+                            @backingInt(scale.vertical_alignment),
                             cell.char.grapheme,
                         },
                     );
@@ -833,7 +833,7 @@ pub fn render(self: *Vaxis, tty: *std.Io.Writer) !void {
     if (self.screen.cursor_shape != self.screen_last.cursor_shape) {
         try tty.print(
             ctlseqs.cursor_shape,
-            .{@intFromEnum(self.screen.cursor_shape)},
+            .{@backingInt(self.screen.cursor_shape)},
         );
         self.screen_last.cursor_shape = self.screen.cursor_shape;
     }

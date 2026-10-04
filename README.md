@@ -9,7 +9,8 @@ It begins with them, but ends with me. Their son, Vaxis
 Libvaxis _does not use terminfo_. Support for vt features is detected through
 terminal queries.
 
-Vaxis uses zig `0.16.0`.
+Vaxis uses zig `0.17.0`. This Ghostty compatibility branch retains the
+existing Unicode tables and image-format behavior while porting compiler APIs.
 
 ## Features
 
